@@ -1,0 +1,59 @@
+name: Validate Catalog
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate catalog.json
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Catalog Schema
+        run: |
+          python3 - <<'PY'
+          import json
+          import sys
+
+          with open("catalog.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          assert isinstance(data, dict), "root must be a JSON object"
+          assert data.get("version") == 1, f"version must be 1, got {data.get('version')!r}"
+          plugins = data.get("plugins")
+          assert isinstance(plugins, list) and len(plugins) > 0, "plugins must be a non-empty list"
+
+          seen_ids = set()
+          for i, p in enumerate(plugins):
+              assert isinstance(p, dict), f"plugins[{i}] must be an object"
+              pid = (p.get("id") or "").strip()
+              name = (p.get("name") or "").strip()
+              kind = (p.get("kind") or "").strip()
+              repo = (p.get("repository") or "").strip()
+              assert pid, f"plugins[{i}].id is required"
+              assert pid.lower() not in seen_ids, f"duplicate plugin id {pid!r}"
+              seen_ids.add(pid.lower())
+              assert name, f"plugins[{i}].name is required"
+              assert kind in ("wasm", "sdplugin"), f"plugins[{i}].kind invalid: {kind!r}"
+              if kind == "wasm":
+                  assert (p.get("assetName") or "").strip(), f"plugins[{i}].assetName required for wasm"
+                  assert isinstance(p.get("allowedHosts", []), list), f"plugins[{i}].allowedHosts must be a list"
+              for url_field in ("repository", "download_url", "icon"):
+                  val = (p.get(url_field) or "").strip()
+                  if val:
+                      assert val.startswith("https://"), f"plugins[{i}].{url_field} must use https:// ({val!r})"
+              assert repo or (p.get("download_url") or "").strip(), f"plugins[{i}] requires repository or download_url"
+
+          print(f"Validated {len(plugins)} curated plugin(s) cleanly.")
+          PY

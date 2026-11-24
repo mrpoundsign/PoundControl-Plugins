@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "plugins": [
+    {
+      "id": "com.github.mrpoundsign.poundcontrol.twitch",
+      "name": "Twitch",
+      "kind": "wasm",
+      "author": "PoundControl",
+      "category": "Streaming",
+      "description": "Full Twitch broadcast, chat, and moderation controls using OAuth2 Device Code authentication.",
+      "repository": "https://github.com/mrpoundsign/PoundControl-Twitch",
+      "assetName": "poundcontrol-twitch.wasm",
+      "icon": "https://raw.githubusercontent.com/mrpoundsign/PoundControl-Twitch/main/assets/logo.svg",
+      "allowedHosts": [
+        "id.twitch.tv",
+        "api.twitch.tv"
+      ],
+      "featured": true
+    }
+  ]
+}
