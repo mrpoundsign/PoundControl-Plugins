@@ -16,6 +16,22 @@
         "api.twitch.tv"
       ],
       "featured": true
+    },
+    {
+      "id": "com.github.mrpoundsign.towncrier.wasm",
+      "name": "TownCrier & Plugins",
+      "kind": "wasm",
+      "author": "mrpoundsign",
+      "category": "Streaming",
+      "description": "Control TownCrier neural TTS, Panic Mute, Bot Actions, and installed Plugins (such as CrowdDJ) as first-class buttons & dials.",
+      "repository": "https://github.com/mrpoundsign/TownCrier",
+      "assetName": "poundcontrol-towncrier.wasm",
+      "icon": "https://raw.githubusercontent.com/mrpoundsign/TownCrier/main/assets/icon.png",
+      "allowedHosts": [
+        "127.0.0.1:8765",
+        "localhost:8765"
+      ],
+      "featured": true
     }
   ]
 }
